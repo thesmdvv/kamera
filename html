@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Capture</title>
+</head>
+<body>
+    <h2>Auto Capture Webcam</h2>
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <img id="capturedImage" alt="Captured Image" style="display:none;"/>
+
+    <script>
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const img = document.getElementById("capturedImage");
+        const context = canvas.getContext("2d");
+
+        // Kameranı aç
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+
+                // 3 saniyə sonra avtomatik şəkil çəksin
+                setTimeout(() => {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    img.src = canvas.toDataURL("image/png"); // Şəkli img elementinə ver
+                    img.style.display = "block"; // Şəkili göstər
+                    video.style.display = "none"; // Kameranı gizlət
+                }, 3000); // 3 saniyə gözləyir
+            })
+            .catch(err => {
+                console.error("Kamera icazəsi verilmədi!", err);
+            });
+    </script>
+</body>
+</html>
